@@ -2,9 +2,15 @@
   "name": "builder",
   "version": "0.0.1",
   "devDependencies": {
+    "cssnext": "^1.5.2",
     "express": "^4.12.4",
+    "extract-text-webpack-plugin": "^0.8.1",
+    "html-webpack-plugin": "^1.4.0",
     "node-libs-browser": "^0.5.2",
     "path": "^0.11.14",
     "webpack": "^1.9.10"
+  },
+  "dependencies": {
+    "lodash": "^3.9.3"
   }
 }

@@ -1,18 +1,20 @@
-var path = require('path');
-
+var path              = require('path');
 var webpack           = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var cssnext           = require('cssnext');
 
-var cssnext = require('cssnext');
-
-var serverConfig = require('../server-config');
+var serverConfig = require('../server/server-config');
 var entryPoints  = require('./entry-points');
 
-var getEntry = function(options) {
-  var entry = entryPoints.getEntry();
+var isDevelopment = function() {
+  return process.env.NODE_ENV !== 'production';
+};
 
-  if (!options.production) {
+var getEntry = function() {
+  var entry = entryPoints.entry;
+
+  if (isDevelopment()) {
     for (var key in entry) {
       if (entry.hasOwnProperty(key)) {
         entry[key].unshift(
@@ -26,15 +28,15 @@ var getEntry = function(options) {
   return entry;
 };
 
-var getAssetName = function(ext, options) {
+var getAssetName = function(ext) {
   var hash = ext === 'js' ? 'chunkhash' : 'contenthash';
-  var name = options.production ? '[name].build.[' + hash + '].' : '[name].build.';
+  var name = isDevelopment() ? '[name].build.' : '[name].build.[' + hash + '].';
   return name + ext;
 };
 
-var getPlugins = function(options) {
+var getPlugins = function() {
   var plugins = [];
-  var chunks  = entryPoints.getChunks();
+  var chunks  = entryPoints.chunks;
 
   chunks.forEach(function(chunk) {
     var htmlWebpackPlugin = new HtmlWebpackPlugin({
@@ -46,7 +48,7 @@ var getPlugins = function(options) {
     plugins.push(htmlWebpackPlugin);
   });
 
-  var extractTextPlugin  = new ExtractTextPlugin(getAssetName('css', options));
+  var extractTextPlugin  = new ExtractTextPlugin(getAssetName('css'));
   var dedupePlugin       = new webpack.optimize.DedupePlugin();
   var commonsChunkPlugin = new webpack.optimize.CommonsChunkPlugin({
     name: 'commons',
@@ -59,34 +61,34 @@ var getPlugins = function(options) {
     commonsChunkPlugin
   );
 
-  if (options.production) {
-    var uglifyPlugin = new webpack.optimize.UglifyJsPlugin();
-
-    plugins.push(uglifyPlugin);
-  } else {
+  if (isDevelopment()) {
     var hotModuleReplacementPlugin = new webpack.HotModuleReplacementPlugin();
     var noErrorsPlugin             = new webpack.NoErrorsPlugin();
 
     plugins.push(hotModuleReplacementPlugin, noErrorsPlugin);
+  } else {
+    var uglifyPlugin = new webpack.optimize.UglifyJsPlugin();
+
+    plugins.push(uglifyPlugin);
   }
 
   return plugins;
 };
 
-var getJSLoader = function(options) {
+var getJSLoader = function() {
   var loaders = ['babel-loader'];
 
-  if (options.sync && !options.production) {
+  if (isDevelopment()) {
     loaders.unshift('react-hot-loader');
   }
 
   return loaders.join('!');
 };
 
-var getCSSLoader = function(options) {
+var getCSSLoader = function() {
   var loaders = ['css-loader', 'postcss-loader'];
 
-  if (options.sync && !options.production) {
+  if (isDevelopment()) {
     loaders.unshift('style-loader');
 
     return loaders.join('!');
@@ -96,53 +98,49 @@ var getCSSLoader = function(options) {
 };
 
 module.exports = {
-  getConfig: function(options) {
-    return {
-      entry: getEntry(options),
+  entry: getEntry(),
 
-      resolve: {
-        modulesDirectories: ['node_modules', 'src']
+  resolve: {
+    modulesDirectories: ['node_modules', 'src']
+  },
+
+  module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: getJSLoader()
       },
-
-      module: {
-        loaders: [
-          {
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: getJSLoader(options)
-          },
-          {
-            test: /\.css$/,
-            loader: getCSSLoader(options)
-          },
-          {
-            test: /\.(woff|jpe?g|png|gif|svg)$/,
-            loader: "url-loader?limit=100000"
-          },
-          {
-            test: /\.(woff|jpe?g|png|gif|svg)\?only-url$/,
-            loader: "file-loader"
-          }
-        ]
+      {
+        test: /\.css$/,
+        loader: getCSSLoader()
       },
-
-      postcss: [
-        cssnext({
-          import: {
-            path: ['src']
-          }
-        })
-      ],
-
-      devtool: options.production ? '' : 'eval',
-
-      output: {
-        path: path.resolve('./build'),
-        filename: getAssetName('js', options),
-        publicPath: options.sync ? 'http://localhost:' + serverConfig.webpackPort + serverConfig.assetsPath : serverConfig.assetsPath
+      {
+        test: /\.(woff|jpe?g|png|gif|svg)$/,
+        loader: "url-loader?limit=100000"
       },
+      {
+        test: /\.(woff|jpe?g|png|gif|svg)\?only-url$/,
+        loader: "file-loader"
+      }
+    ]
+  },
 
-      plugins: getPlugins(options)
-    };
-  }
+  postcss: [
+    cssnext({
+      import: {
+        path: ['src']
+      }
+    })
+  ],
+
+  devtool: isDevelopment() ? 'eval' : '',
+
+  output: {
+    path: path.resolve('./build'),
+    filename: getAssetName('js'),
+    publicPath: isDevelopment() ? 'http://localhost:' + serverConfig.webpackPort + serverConfig.assetsPath : serverConfig.assetsPath
+  },
+
+  plugins: getPlugins()
 };
