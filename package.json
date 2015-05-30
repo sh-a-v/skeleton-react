@@ -1,0 +1,10 @@
+{
+  "name": "builder",
+  "version": "0.0.1",
+  "devDependencies": {
+    "express": "^4.12.4",
+    "node-libs-browser": "^0.5.2",
+    "path": "^0.11.14",
+    "webpack": "^1.9.10"
+  }
+}
