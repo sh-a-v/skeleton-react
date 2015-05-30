@@ -6,8 +6,7 @@ var webpackConfig = require('./webpack-config');
 
 module.exports = {
   run: function() {
-    var wpConfig = webpackConfig.getConfig(options);
-    var compiler = webpack(wpConfig);
+    var compiler = webpack(webpackConfig);
 
     var server = new WebpackDevServer(compiler, {
       contentBase: 'http://localhost:' + serverConfig.expressPort,
