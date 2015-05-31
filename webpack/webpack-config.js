@@ -7,8 +7,15 @@ var cssnext           = require('cssnext');
 var serverConfig = require('../server/server-config');
 var entryPoints  = require('./entry-points');
 
+var ENV  = 'development';
+var SYNC = false;
+
 var isDevelopment = function() {
-  return process.env.NODE_ENV !== 'production';
+  return ENV === 'development';
+};
+
+var isSync = function() {
+  return SYNC;
 };
 
 var getEntry = function() {
@@ -78,7 +85,7 @@ var getPlugins = function() {
 var getJSLoader = function() {
   var loaders = ['babel-loader'];
 
-  if (isDevelopment()) {
+  if (isDevelopment() && isSync()) {
     loaders.unshift('react-hot-loader');
   }
 
@@ -88,7 +95,7 @@ var getJSLoader = function() {
 var getCSSLoader = function() {
   var loaders = ['css-loader', 'postcss-loader'];
 
-  if (isDevelopment()) {
+  if (isDevelopment() && isSync()) {
     loaders.unshift('style-loader');
 
     return loaders.join('!');
@@ -98,49 +105,62 @@ var getCSSLoader = function() {
 };
 
 module.exports = {
-  entry: getEntry(),
+  get: function(options) {
 
-  resolve: {
-    modulesDirectories: ['node_modules', 'src']
-  },
+    if (options && options.env) {
+      ENV = options.env;
+    }
 
-  module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: getJSLoader()
+    if (options && typeof options.sync === 'boolean') {
+      SYNC = options.sync;
+    }
+
+    return {
+      entry: getEntry(),
+
+      resolve: {
+        modulesDirectories: ['node_modules', 'src']
       },
-      {
-        test: /\.css$/,
-        loader: getCSSLoader()
+
+      module: {
+        loaders: [
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: getJSLoader()
+          },
+          {
+            test: /\.css$/,
+            loader: getCSSLoader()
+          },
+          {
+            test: /\.(woff|jpe?g|png|gif|svg)$/,
+            loader: "url-loader?limit=100000"
+          },
+          {
+            test: /\.(woff|jpe?g|png|gif|svg)\?only-url$/,
+            loader: "file-loader"
+          }
+        ]
       },
-      {
-        test: /\.(woff|jpe?g|png|gif|svg)$/,
-        loader: "url-loader?limit=100000"
+
+      postcss: [
+        cssnext({
+          import: {
+            path: ['src']
+          }
+        })
+      ],
+
+      devtool: isDevelopment() ? 'eval' : '',
+
+      output: {
+        path: path.resolve('./build'),
+        filename: getAssetName('js'),
+        publicPath: isDevelopment() && isSync() ? 'http://localhost:' + serverConfig.webpackPort + serverConfig.assetsPath : serverConfig.assetsPath
       },
-      {
-        test: /\.(woff|jpe?g|png|gif|svg)\?only-url$/,
-        loader: "file-loader"
-      }
-    ]
-  },
 
-  postcss: [
-    cssnext({
-      import: {
-        path: ['src']
-      }
-    })
-  ],
-
-  devtool: isDevelopment() ? 'eval' : '',
-
-  output: {
-    path: path.resolve('./build'),
-    filename: getAssetName('js'),
-    publicPath: isDevelopment() ? 'http://localhost:' + serverConfig.webpackPort + serverConfig.assetsPath : serverConfig.assetsPath
-  },
-
-  plugins: getPlugins()
+      plugins: getPlugins()
+    };
+  }
 };
