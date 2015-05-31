@@ -2,9 +2,11 @@
   "name": "builder",
   "version": "0.0.1",
   "scripts": {
-    "build": "npm run clean && node webpack/webpack-builder production",
-    "build-dev": "npm run clean && node webpack/webpack-builder development",
-    "dev": "npm run build-dev && node webpack/webpack-server",
+    "build": "npm run clean && node ./webpack/webpack-builder production",
+    "build-dev": "npm run clean && node ./webpack/webpack-builder development",
+    "server": "npm run server-stop && forever start ./server/server.js",
+    "server-stop": "forever stopall",
+    "dev": "npm run build-dev && npm run server && node ./webpack/webpack-server",
     "clean": "rimraf ./build/*"
   },
   "devDependencies": {
@@ -15,6 +17,7 @@
     "express": "^4.12.4",
     "extract-text-webpack-plugin": "^0.8.1",
     "file-loader": "^0.8.4",
+    "forever": "^0.14.1",
     "html-webpack-plugin": "^1.4.0",
     "node-libs-browser": "^0.5.2",
     "path": "^0.11.14",
