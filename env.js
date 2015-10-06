@@ -1,17 +1,17 @@
 export default {
-  get name() {
+  get value() {
     return process.env.NODE_ENV;
   },
 
   isDevelopment() {
-    return this.name === 'development';
+    return this.value === 'development';
   },
 
   isPreProduction() {
-    return this.name === 'pre-production';
+    return this.value === 'pre-production';
   },
 
   isProduction() {
-    return this.name === 'production';
+    return this.value === 'production';
   }
 }
