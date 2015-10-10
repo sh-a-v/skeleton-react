@@ -8,6 +8,8 @@ let defaultConfig = {
   localesPath: '/locales',
   apiPath    : '/api',
 
+  clientBuildDir: 'client-build',
+
   get ipAddress() {
     return ip.address();
   },
