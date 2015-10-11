@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route } from 'react-router';
 
-import Landing from 'client/app/components/app';
+import App from 'client/app-2/components/app';
 
 let routes = (
-  <Route component={Landing}>
+  <Route component={App}>
   </Route>
 );
 

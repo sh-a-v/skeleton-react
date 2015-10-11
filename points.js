@@ -1,13 +1,13 @@
 export default [
   {
-    name: 'app',
-    path: './client/app/app.js',
+    name: 'app-1',
+    path: './client/app-1/init.js',
     url : '/'
   },
   {
-    name: 'landing',
-    path: './client/landing/landing.js',
-    url : '/landing'
+    name: 'app-2',
+    path: './client/app-2/init.js',
+    url : '/app-2'
   }
 ];
 

@@ -2,7 +2,7 @@ import env from '../env';
 import config from '../config';
 
 import path from 'path';
-import webpack from 'webpack';
+import webpack from 'webpack';[]
 import postcssCssnext from 'postcss-cssnext';
 import postcssNested from 'postcss-nested';
 import postcssImport from 'postcss-import';

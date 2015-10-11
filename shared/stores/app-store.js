@@ -1,7 +1,7 @@
 import storeCreator from 'shared/tools/store-creator';
 
-//import localesReducer from 'client/app/reducers/locales-reducer';
-//import userReducer from 'client/app/reducers/user-reducer';
+//import localesReducer from 'client/app-1/reducers/locales-reducer';
+//import userReducer from 'client/app-1/reducers/user-reducer';
 
 
 let reducers = {
