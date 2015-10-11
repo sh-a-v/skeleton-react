@@ -12,11 +12,13 @@ import webpackLoaders from './webpack-loaders';
 import webpackPlugins from './webpack-plugins';
 import webpackAssets from './webpack-assets';
 
+
 export default {
   entry: webpackEntry,
 
   resolve: {
-    modulesDirectories: ['node_modules', 'server', 'client', 'locales', path.resolve('./')]
+    root: path.resolve('./'),
+    modulesDirectories: ['node_modules']
   },
 
   module: {

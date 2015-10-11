@@ -8,11 +8,11 @@ import createLocation from 'history/lib/createLocation'
 import React from 'react';
 import Router from 'react-router';
 
-import headersHandler from 'client/common/tools/headers-handler';
-import containerCreator from 'client/common/tools/server-container-creator';
-import * as stores from 'client/common/stores';
-import * as routes from 'client/common/routes';
-import translator from 'client/common/translator/translator-counterpart';
+import headersHandler from 'shared/tools/headers-handler';
+import containerCreator from 'shared/tools/server-container-creator';
+import * as stores from 'shared/stores';
+import * as routes from 'shared/routes';
+import translator from 'shared/translator/translator-counterpart';
 
 export default {
   async _getAppProps(options) {

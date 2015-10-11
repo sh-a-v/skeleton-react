@@ -1,9 +1,7 @@
-import points from '../points';
+import points, { commonVendor } from '../points';
 
 let entry = {
-  vendor: [
-    'react'
-  ]
+  vendor: commonVendor
 };
 
 points.forEach(point => {

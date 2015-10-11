@@ -16,7 +16,7 @@ let plugins = [
 
 points.forEach(point => {
   let htmlWebpackPlugin = new HtmlWebpackPlugin({
-    template: './client/common/index.html',
+    template: './shared/index.html',
     chunks  : ['vendor', point.name],
     filename: `${point.name}.index.html`
   });

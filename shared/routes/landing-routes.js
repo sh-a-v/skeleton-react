@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router';
 
-import Landing from 'landing/components/landing';
+import Landing from 'client/app/components/app';
 
 let routes = (
   <Route component={Landing}>
