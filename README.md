@@ -2,7 +2,7 @@
 
 ### Production
 
-`npm run build`
+`npm run prod`
 
 ### Development
 
