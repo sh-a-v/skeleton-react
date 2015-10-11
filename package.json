@@ -2,8 +2,12 @@
   "name": "skeleton-react",
   "version": "0.0.1",
   "scripts": {
+    "dev": "npm install && npm run build-dev && npm run server-dev",
+    "prod": "npm install && npm run build-prod && npm run server-prod",
     "build-dev": "node ./webpack/webpack-babel.js development",
-    "server-dev": "node ./server/server-babel.js development"
+    "build-prod": "node ./webpack/webpack-babel.js production",
+    "server-dev": "node ./server/server-babel.js development",
+    "server-prod": "node ./server/server-babel.js production"
   },
   "devDependencies": {
     "babel": "^5.8.23",
