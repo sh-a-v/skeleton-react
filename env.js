@@ -16,7 +16,7 @@ let env = {
       this.value = 'development';
     }
 
-    process.env.NODE_ENV = this.value;
+    process.env.NODE_ENV = this.isDevelopment() ? 'development' : 'production';
   },
 
   isDevelopment() {
@@ -30,7 +30,7 @@ let env = {
   isProduction() {
     return this.value === 'production';
   }
-}
+};
 
 if (!env.value) {
   env.set();

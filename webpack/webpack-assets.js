@@ -1,10 +1,14 @@
 import env from '../env';
 import config from '../config';
 
+import ip from 'ip';
 
 export default {
   getAssetsPath() {
-    return config.assetsPath;
+    let ipAddress = ip.address();
+    let webpackAssetsPath = `http://${ipAddress}:${config.webpackPort}${config.assetsPath}`;
+
+    return env.isDevelopment() ? webpackAssetsPath : config.assetsPath
   },
 
   getAssetsName(ext) {

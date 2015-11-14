@@ -4,16 +4,16 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
 
 let getJSLoader = function() {
-  let loaders = ['babel-loader?optional[]=runtime&stage=0'];
+  let loaders = ['babel-loader'];
 
   if (env.isDevelopment()) {
-    //loaders.unshift('react-hot-loader');
+    loaders.unshift('react-hot-loader');
   }
 
   return loaders.join('!');
 };
 
-let getCSSLoader = function() {
+var getCSSLoader = function() {
   let loaders = ['css-loader', 'postcss-loader'];
 
   if (env.isDevelopment()) {
@@ -47,4 +47,16 @@ export default [
     test: /\.(woff|jpe?g|png|gif|svg)\?only-url$/,
     loader: "file-loader"
   }
+];
+
+export let webpackServerLoaders = [
+  {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    loader: 'babel-loader?optional[]=runtime&stage=0'
+  },
+  {
+    test: /\.json$/,
+    loader: 'json-loader'
+  },
 ];

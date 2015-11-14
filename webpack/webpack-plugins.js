@@ -25,9 +25,10 @@ points.forEach(point => {
 });
 
 if (env.isDevelopment()) {
-  let noErrorsPlugin = new webpack.NoErrorsPlugin();
+  let hotModuleReplacementPlugin = new webpack.HotModuleReplacementPlugin();
+  let noErrorsPlugin             = new webpack.NoErrorsPlugin();
 
-  plugins.push(noErrorsPlugin);
+  plugins.push(hotModuleReplacementPlugin, noErrorsPlugin);
 } else {
   let uglifyPlugin = new webpack.optimize.UglifyJsPlugin({
     compress: {
@@ -39,3 +40,7 @@ if (env.isDevelopment()) {
 }
 
 export default plugins;
+
+export let webpackServerPlugins = [
+  new webpack.NormalModuleReplacementPlugin(/\.css$/, 'node-noop')
+];
