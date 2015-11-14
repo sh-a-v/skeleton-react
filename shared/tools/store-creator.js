@@ -1,18 +1,15 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
+import { GLOBAL_PARAMS } from 'shared/global-params';
 
-export default {
-  create: function(reducers) {
-    let createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-    let combinedReducer = combineReducers(reducers);
+export default function storeCreator(reducers) {
+  let createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+  let combinedReducer = combineReducers(reducers);
 
-    /*if (env.getInitialState()) {
-      return createStoreWithMiddleware(combinedReducer, env.getInitialState());
-    } else {
-      return createStoreWithMiddleware(combinedReducer);
-    }*/
-
+  if (GLOBAL_PARAMS.initialState) {
+    return createStoreWithMiddleware(combinedReducer, GLOBAL_PARAMS.initialState);
+  } else {
     return createStoreWithMiddleware(combinedReducer);
   }
 };

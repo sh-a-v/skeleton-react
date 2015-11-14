@@ -11,7 +11,7 @@ import createLocation from 'history/lib/createLocation'
 
 import { GLOBAL_PARAMS, setGlobalParam } from 'shared/global-params';
 import headersHandler from 'shared/tools/headers-handler';
-import containerCreator from 'shared/tools/server-container-creator';
+import { serverContainerCreator } from 'shared/tools/container-creator';
 import * as stores from 'shared/stores';
 import * as routes from 'shared/routes';
 import translator from 'shared/translator/translator-counterpart';
@@ -34,7 +34,7 @@ export default {
     }
 
     let appContainerHtml = ReactDOMServer.renderToString(
-      containerCreator.create({store, translator, renderProps})
+      serverContainerCreator.create({store, translator, renderProps})
     );
 
     return {store, appContainerHtml};

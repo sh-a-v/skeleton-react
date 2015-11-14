@@ -1,2 +1,2 @@
-export { default as app } from './app-routes';
-export { default as landing } from './landing-routes';
+export { default as app1 } from './app-1-routes';
+export { default as app2 } from './app-2-routes';
