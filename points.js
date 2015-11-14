@@ -17,6 +17,7 @@ export let commonVendor = [
   'react-router',
   'react-redux',
   'redux',
-  'redux-thunk',
-  'lodash'
+  'redux-thunk'
 ];
+
+export let serverPoint = './server/server.js';
