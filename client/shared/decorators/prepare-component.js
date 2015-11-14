@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import { serverConfig } from 'general/config';
+import { GLOBAL_PARAMS } from 'shared/global-params';
 
 export default function prepareComponent(prepareFunction, options) {
   return DecoratedComponent =>
@@ -18,7 +18,7 @@ export default function prepareComponent(prepareFunction, options) {
 
         const {
           context: { store, translator },
-          props: { params, location }
+          props  : { params, location }
         } = this;
 
         prepareFunction({ store, params, location, translator });
@@ -31,7 +31,7 @@ export default function prepareComponent(prepareFunction, options) {
 
         const {
           context: { store, translator },
-          props: { params, location }
+          props  : { params, location }
         } = this;
 
         prepareFunction({ store, params, location, translator });
