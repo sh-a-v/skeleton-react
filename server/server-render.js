@@ -3,11 +3,13 @@ import points from '../points';
 
 import fs from 'fs';
 import path from 'path';
-import Promise from 'bluebird';
-import createLocation from 'history/lib/createLocation'
-import React from 'react';
-import Router from 'react-router';
 
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import Router from 'react-router';
+import createLocation from 'history/lib/createLocation'
+
+import { GLOBAL_PARAMS, setGlobalParam } from 'shared/global-params';
 import headersHandler from 'shared/tools/headers-handler';
 import containerCreator from 'shared/tools/server-container-creator';
 import * as stores from 'shared/stores';
@@ -18,10 +20,10 @@ export default {
   async _getAppProps(options) {
     let renderProps = options.renderProps;
 
-    let store         = stores[options.chunk];
+    let store         = stores[options.point.name];
     let location      = renderProps.location;
     let params        = renderProps.params;
-    let browserLocale = headersHandler.getLocale(options.headers);
+    let browserLocale = headersHandler.getLocale();
 
     let prepareComponentMethods  = renderProps.components.map(component => component.prepareComponent);
 
@@ -31,7 +33,7 @@ export default {
       }
     }
 
-    let appContainerHtml = React.renderToString(
+    let appContainerHtml = ReactDOMServer.renderToString(
       containerCreator.create({store, translator, renderProps})
     );
 
@@ -39,20 +41,19 @@ export default {
   },
 
   async _render({options, state=null, appContainerHtml=''}) {
-    let documentHtml = await this.getDocumentHtml(options.path);
+    setGlobalParam('initialState', state);
 
-    documentHtml = documentHtml.replace('{{ renderedApp }}', appContainerHtml);
-    documentHtml = documentHtml.replace('{{ initialState }}', JSON.stringify(state));
-    documentHtml = documentHtml.replace('{{ serverConfig }}', JSON.stringify(config));
+    let documentHtml = await this.getDocumentHtml(options);
+
+    documentHtml = documentHtml.replace('{{ RENDERED_APP }}', appContainerHtml);
+    documentHtml = documentHtml.replace('{{ GLOBAL_PARAMS }}', JSON.stringify(GLOBAL_PARAMS));
 
     return documentHtml;
   },
 
   async getDocumentHtml(url='/') {
     let html = '';
-
-    let point = _.findWhere({url: url});
-    let pointTemplatePath = path.join(__dirname, `../${config.clientBuildDir}`, `${point.name}.index.html`);
+    let pointTemplatePath = path.resolve(`./build/${options.point.name}.index.html`);
 
     return new Promise(function(resolve, reject) {
       fs.readFile(pointTemplatePath, {encoding: 'utf8'}, function(err, data) {
