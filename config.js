@@ -1,37 +1,62 @@
-import _ from 'lodash';
-import ip from 'ip';
-
 import env from './env';
 
+import ip from 'ip';
+
+import { setGlobalParam } from './shared/global-params';
+
+let ipAddress = ip.address();
+
 let defaultConfig = {
-  assetsPath : '/assets',
-  localesPath: '/locales',
-  apiPath    : '/api',
+  assetsPath : '/assets/',
+  localesPath: '/locales/',
+  proxyPath  : '/proxy/',
 
-  clientBuildDir: 'client-build',
+  serverRendering: true,
 
-  get ipAddress() {
-    return ip.address();
-  },
+  locales: [
+    'ru',
+    'en'
+  ],
 
-  get localAddress() {
-    return `http://${this.ipAddress}:${this.expressPort}`;
-  }
+  desktopSizeFrom: 1025,
+  tabletSizeFrom : 640,
+  mobileSizeFrom : 0
 };
 
 let developmentConfig = {
+  ...defaultConfig,
+
   expressPort: 3000,
   webpackPort: 3001,
+  clientAddress: `http://${ipAddress}:3000`,
+  serverAddress: `http://localhost:3000`,
+  proxyAddress : ``,
+
+  devLogs: true,
   serverRendering: false
 };
 
 let preProductionConfig = {
+  ...defaultConfig,
+
   expressPort: 3000,
+  clientAddress: `http://${ipAddress}:3000`,
+  serverAddress: `http://localhost:3000`,
+  proxyAddress : ``,
+
+  devLogs: true,
   serverRendering: true
 };
 
 let productionConfig = {
-  expressPort: 8080,
+  ...defaultConfig,
+
+  expressPort: 80,
+  clientAddress: ``,  // address for client requests
+  serverAddress: ``,  // address for server requests (express, server render)
+  proxyAddress : ``,  // address for proxy requests (ruby, api)
+
+  devLogs: false,
   serverRendering: true
 };
 
@@ -45,4 +70,6 @@ if (env.isDevelopment()) {
   currentConfig = productionConfig;
 }
 
-export default _.merge(defaultConfig, currentConfig);
+setGlobalParam('config', currentConfig);
+
+export default currentConfig;
